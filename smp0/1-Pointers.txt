@@ -1,0 +1,95 @@
+Pointers in C
+-------------
+
+1) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *temp;
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+Why is the above code incorrect (i.e., likely to crash)?
+The argv[0] contains an address, so the variable from the pointer temp should be from a type that can handle more than
+1 character at a time. If the temp variable was an array with a suficient size to handle the address of the argv[0],
+it will be fine.
+
+
+
+2) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char temp[9];
+  strcpy(temp, argv[0]);
+  return 0;
+}
+
+A buffer overflow occurs when the program name is 9 characters long
+(e.g., "12345.exe"). Why?
+Because of the null character. When working with arrays we should take in consideration always the null character,
+which occupies an extra slot inside of the array, so when the null character tries to be placed inside a slot, it
+will not be able to due to all being occupied, causing an overflow.
+
+
+3) Consider the following C program.
+#include <string.h>
+int main(int argc, char *argv[])
+{
+  char *buffer = "Hello";
+  strcpy(buffer, "World");
+  return 0;
+}
+
+Why does this program crash?
+Because the pointers are used to stored the address from another variable, the actual information can't
+be stored in an actual pointer itself. Also, the size of the variable type "char", can't handle more than one
+character at a time, so the program will crash when it tries to store the word "Hello" on a char variable.
+
+
+4) Consider the following C snippet.
+void myfunc()
+{
+  char b[100];
+  char *buffer = &b[0];
+  strcpy(buffer, "World");
+}
+
+Is this correct?  What's a simpler expression for &b[0]?
+Yes, it is correct. But it can be written as "buffer = b" because when declaring an array the first slot from it can
+be used as a pointer, so it can be called only as a "b".
+
+
+5) Consider the following C program.
+#include <stdio.h>
+int main(int argc, char* argv[])
+{
+  printf("%s %s %s\n", *argv, (*(argv+1)) + 2, *(argv+2));
+  return 0;
+}
+
+If this code is executed using the following line, what will be the output?
+> program1 -n5 abc
+Output: program1 5abc
+
+
+6) Consider the following C program.
+#include <stdio.h>
+#include <string.h>
+char *myfunc(char **argv)
+{
+  char buffer[100];
+  strcpy(buffer, "hello");
+  return buffer;
+}
+int main(int argc, char *argv[])
+{
+  char *s = myfunc(argv);
+  printf("%s\n", s);
+}
+
+What's wrong with this?
+The buffer function doesn't exist as a return function. Therefore, the address value stored in the pointer s will not
+save anything inside; hence, the code will not display anything.
+
